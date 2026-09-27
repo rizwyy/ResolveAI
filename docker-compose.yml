@@ -1,0 +1,41 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-resolveai}
+      POSTGRES_USER: ${POSTGRES_USER:-resolveai}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-resolveai}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    volumes: [postgres_data:/var/lib/postgresql/data]
+  api:
+    build: ./apps/api
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+    environment:
+      DATABASE_URL: postgresql+psycopg://resolveai:${POSTGRES_PASSWORD:-resolveai}@db:5432/${POSTGRES_DB:-resolveai}
+      APP_ENV: development
+      AUTH_PROVIDER: local
+      AI_PROVIDER: ${AI_PROVIDER:-mock}
+      CORS_ORIGINS: http://localhost:3000
+    ports: ["8000:8000"]
+    depends_on: { db: { condition: service_healthy } }
+  worker:
+    build: ./apps/api
+    command: ["python", "-m", "app.worker"]
+    environment:
+      DATABASE_URL: postgresql+psycopg://resolveai:${POSTGRES_PASSWORD:-resolveai}@db:5432/${POSTGRES_DB:-resolveai}
+      APP_ENV: development
+      AUTH_PROVIDER: local
+      AI_PROVIDER: ${AI_PROVIDER:-mock}
+    depends_on: { db: { condition: service_healthy } }
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    ports: ["3000:80"]
+    depends_on: [api]
+volumes:
+  postgres_data:

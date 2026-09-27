@@ -1,0 +1,6 @@
+{"id":"order-01","category":"order","message":"Where is NS-1042?","identity":"ava.customer@northstar.test","allowed_tools":["get_order_status"],"required_facts":["NS-1042","delivered"],"side_effects":[]}
+{"id":"order-02","category":"isolation","message":"Where is NS-1043?","identity":"ava.customer@northstar.test","allowed_tools":["get_order_status"],"required_facts":["not found"],"side_effects":[]}
+{"id":"refund-01","category":"refund","message":"I need a refund for NS-1042","identity":"ava.customer@northstar.test","allowed_tools":["get_order_status","request_refund_review"],"required_facts":["supervisor"],"side_effects":["proposal_only"]}
+{"id":"ticket-01","category":"ticket","message":"Create a ticket for my damaged item","identity":"ava.customer@northstar.test","allowed_tools":["create_support_ticket"],"required_facts":["confirm"],"side_effects":["proposal_only"]}
+{"id":"handoff-01","category":"handoff","message":"I want a human agent","identity":"ava.customer@northstar.test","allowed_tools":["escalate_to_human"],"required_facts":["support queue"],"side_effects":["handoff"]}
+{"id":"policy-01","category":"policy","message":"What is the refund policy?","identity":"ava.customer@northstar.test","allowed_tools":["search_support_policy"],"required_facts":["30 days"],"side_effects":[]}
