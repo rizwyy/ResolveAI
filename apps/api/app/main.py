@@ -3,7 +3,6 @@ from __future__ import annotations
 import hashlib
 import uuid
 from contextlib import asynccontextmanager
-from datetime import datetime
 from typing import Any
 
 from fastapi import Depends, FastAPI, Header, HTTPException, Request, Response
@@ -14,7 +13,7 @@ from sqlalchemy.orm import Session
 from .auth import Principal, current_principal, require_staff, require_supervisor
 from .config import get_settings
 from .db import Base, engine, get_db
-from .models import (ActionRequest, AuditEvent, Conversation, CustomerProfile, Message, Order, OutboxEvent,
+from .models import (ActionRequest, AuditEvent, Conversation, Message, Order, OutboxEvent,
                      PolicyDocument, Ticket, Turn, now)
 from .schemas import Confirmation, ConversationCreate, Decision, HumanReply, MessageCreate, TicketUpdate
 from .seed import seed_database
